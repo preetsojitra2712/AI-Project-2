@@ -26,3 +26,11 @@ def load_data(filename):
 
     return data
 
+def euclid_dist(vec1, vec2):
+   #in this I Compute Euclidean distance between two equal-length lists
+    total = 0.0
+    for a, b in zip(vec1, vec2):
+        diff = a - b
+        total += diff * diff
+    return math.sqrt(total)
+
