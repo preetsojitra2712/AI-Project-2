@@ -99,3 +99,30 @@ def select_forward(labels, records):
     pretty_best = ", ".join(str(x+1) for x in best_choice)
     print(f"Finished Search! Best feature subset came out to be {{{pretty_best}}} with accuracy {best_acc*100:.2f}%\n")
 
+def select_backward(labels, records):
+    #start with all features, and drop one at a time if it improves accuracy
+    num_feats = len(records[0])
+    chosen = list(range(num_feats))
+    best_choice = chosen.copy()
+    best_acc = compute_loocv(labels, records, chosen)
+    print("=== Backward Elimination ===")
+    for _ in range(num_feats - 1):
+        remove_feat = None
+        local_best = 0.0
+        for f in chosen:
+            trial = [x for x in chosen if x != f]
+            acc = compute_loocv(labels, records, trial)
+            pretty = ", ".join(str(x+1) for x in trial)
+            print(f"   Using feature(s) {{{pretty}}} accuracy is {acc*100:.2f}%")
+            if acc > local_best:
+                local_best, remove_feat = acc, f
+        if remove_feat is None:
+            break
+        chosen.remove(remove_feat)
+        pretty_chosen = ", ".join(str(x+1) for x in chosen)
+        print(f"\nFeature set {{{pretty_chosen}}} was best with {local_best*100:.2f}%\n")
+        if local_best > best_acc:
+            best_acc, best_choice = local_best, chosen.copy()
+    pretty_best = ", ".join(str(x+1) for x in best_choice)
+    print(f"Finished Search! Best feature subset came out to be {{{pretty_best}}} with accuracy {best_acc*100:.2f}%\n")
+
