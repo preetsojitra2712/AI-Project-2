@@ -69,3 +69,33 @@ def show_baseline(labels, records):
     pretty = ", ".join(str(f+1) for f in all_feats)
     print(f"Running nearest neighbor with all the features {{{pretty}}} has accuracy {acc*100:.2f}%\n")
 
+
+def select_forward(labels, records):
+    # add one feature at a time, keeping the one that improves accuracy most
+    num_feats = len(records[0])
+    chosen = []
+    best_choice = []
+    best_acc = 0.0
+    print("=== Forward Selection ===")
+    for _ in range(num_feats):
+        candidate = None
+        local_best = 0.0
+        for f in range(num_feats):
+            if f in chosen:
+                continue
+            trial = chosen + [f]
+            acc = compute_loocv(labels, records, trial)
+            pretty = ", ".join(str(x+1) for x in trial)
+            print(f"   Using feature(s) {{{pretty}}} accuracy is {acc*100:.2f}%")
+            if acc > local_best:
+                local_best, candidate = acc, f
+        if candidate is None:
+            break
+        chosen.append(candidate)
+        pretty_chosen = ", ".join(str(x+1) for x in chosen)
+        print(f"\nFeature set {{{pretty_chosen}}} was best with {local_best*100:.2f}%\n")
+        if local_best > best_acc:
+            best_acc, best_choice = local_best, chosen.copy()
+    pretty_best = ", ".join(str(x+1) for x in best_choice)
+    print(f"Finished Search! Best feature subset came out to be {{{pretty_best}}} with accuracy {best_acc*100:.2f}%\n")
+
