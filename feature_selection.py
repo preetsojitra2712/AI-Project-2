@@ -126,3 +126,48 @@ def select_backward(labels, records):
     pretty_best = ", ".join(str(x+1) for x in best_choice)
     print(f"Finished Search! Best feature subset came out to be {{{pretty_best}}} with accuracy {best_acc*100:.2f}%\n")
 
+def main():
+   
+    print("Select input method:")
+    print("  1) Enter a test file name (choose CS205_small_Data__22.txt or CS205_large_Data__45.txt)")
+    print("  2) Use my data (diabetes.csv)")
+    choice = input("Enter 1 or 2: ").strip()
+
+    if choice == "1":
+        path = input("Enter path to your data file: ").strip()
+    elif choice == "2":
+        path = "diabetes.csv"
+    else:
+        print("Wrong selection!")
+        return
+
+    try:
+        labels, records = read_data(path)
+    except FileNotFoundError:
+        print(f"Error: file not found: {path}")
+        return
+
+    feats = len(records[0])
+    inst = len(records)
+    print(f"\nThis dataset has {feats} features and {inst} instances.\n")
+    show_baseline(labels, records)
+
+    print("Please select an algorithm:")
+    print("  1) Forward Selection")
+    print("  2) Backward Elimination")
+    algo = input("Enter 1 or 2: ").strip()
+    print("\nBeginning Search...\n")
+    start = time.perf_counter()
+    if algo == "1":
+        select_forward(labels, records)
+    elif algo == "2":
+        select_backward(labels, records)
+    else:
+        print("Wrong selection!")
+        return
+    end = time.perf_counter()
+
+    print(f"Time taken by the algorithm: {(end - start)/60:.2f} minutes")
+
+if __name__ == "__main__":
+    main()
