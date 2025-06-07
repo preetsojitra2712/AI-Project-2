@@ -61,3 +61,11 @@ def compute_loocv(labels, records, feats):
             correct += 1
     return correct / total
 
+def show_baseline(labels, records):
+    #compute accuracy using every feature
+    num_feats = len(records[0])
+    all_feats = list(range(num_feats))
+    acc = compute_loocv(labels, records, all_feats)
+    pretty = ", ".join(str(f+1) for f in all_feats)
+    print(f"Running nearest neighbor with all the features {{{pretty}}} has accuracy {acc*100:.2f}%\n")
+
