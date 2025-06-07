@@ -37,3 +37,27 @@ def read_data(file_path):
     # I return both class labels and feature vectors
     return labels, records
 
+def compute_loocv(labels, records, feats):
+    #loop over every instance, using the rest to predict its label
+    correct = 0
+    total = len(records)
+    for i in range(total):
+        best = float('inf')
+        prediction = None
+        vec_i = records[i]
+        for j in range(total):
+            if i == j:
+                continue
+            vec_j = records[j]
+            #select only the features we're testing
+            sel_i = [vec_i[k] for k in feats]
+            sel_j = [vec_j[k] for k in feats]
+            #measure how close they are
+            d = euclid_dist(sel_i, sel_j)
+            if d < best:
+                best, prediction = d, labels[j]
+        #check if my guess matches the true label
+        if prediction == labels[i]:
+            correct += 1
+    return correct / total
+
