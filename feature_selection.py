@@ -129,7 +129,7 @@ def select_backward(labels, records):
 def main():
    
     print("Select input method:")
-    print("  1) Enter a test file name (choose CS205_small_Data__32.txt or CS205_large_Data__32.txt)")
+    print("  1) Enter a test file name (choose CS205_small_Data__32.txt or CS205_large_Data__37.txt)")
     print("  2) Use my data (diabetes.csv)")
     choice = input("Enter 1 or 2: ").strip()
 
